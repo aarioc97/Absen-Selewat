@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Absen Selewat</string>
+    <string name="koordinat_lokasi">Koordinat Lokasi:</string>
+    <string name="desired_point">Titik Koordinat Absen (x.xxxx):</string>
+    <string name="latitude">Latitude:</string>
+    <string name="longitude">Longitude:</string>
+    <string name="koordinat_value">0.0000</string>
+    <string name="assign_point_button">TENTUKAN TITIK ABSEN</string>
+    <string name="absen_button">ABSEN</string>
 </resources>

@@ -1,21 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/pointtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/desired_point"
+        android:textSize="20sp"
+        android:layout_marginBottom="10sp" />
+
+    <TextView
+        android:id="@+id/latitudepointtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/latitude" />
+
+    <EditText
+        android:id="@+id/latitudepoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/koordinat_value"
+        android:hint="@string/koordinat_value"
+        android:inputType="numberDecimal|numberSigned"
+        android:autofillHints="" />
+
+    <TextView
+        android:id="@+id/longitudepointtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/longitude" />
+
+    <EditText
+        android:id="@+id/longitudepoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/koordinat_value"
+        android:hint="@string/koordinat_value"
+        android:inputType="numberDecimal|numberSigned"
+        android:autofillHints="" />
+
+    <Button
+        android:id="@+id/assign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/assign_point_button"
+        android:layout_marginTop="10sp"
+        android:layout_marginBottom="50sp" />
 
     <TextView
         android:id="@+id/absentitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Absensi"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.30" />
+        android:text="@string/koordinat_lokasi"
+        android:textSize="20sp"
+        android:layout_marginBottom="10sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/latitudetitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/latitude" />
+
+    <TextView
+        android:id="@+id/latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/koordinat_value" />
+
+    <TextView
+        android:id="@+id/longitudetitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/longitude" />
+
+    <TextView
+        android:id="@+id/longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/koordinat_value" />
+
+    <Button
+        android:id="@+id/absen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/absen_button"
+        android:layout_marginTop="10sp" />
+
+</LinearLayout>

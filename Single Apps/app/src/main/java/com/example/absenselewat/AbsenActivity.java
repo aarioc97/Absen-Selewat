@@ -37,7 +37,7 @@ import com.google.android.gms.location.Priority;
 
 //Penonaktifan tombol absen masih salah!
 
-public class MainActivity extends AppCompatActivity implements OnClickListener {
+public class AbsenActivity extends AppCompatActivity implements OnClickListener {
 
     FusedLocationProviderClient locProvider;
     TextView latitudeText, longitudeText;
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_absen);
 
         this.latitudeText = findViewById(R.id.latitude);
         this.longitudeText = findViewById(R.id.longitude);

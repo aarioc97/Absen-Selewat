@@ -6,12 +6,74 @@
 
     <style>
         body {
+            background: #ebeeef;
             align-content: center;
+        }
+        @font-face {
+            font-family: poppinsBold;
+            src: url(fonts/Poppins-Bold.ttf);
+        }
+        @font-face {
+            font-family: poppinsReg;
+            src: url(fonts/Poppins-Regular.ttf);
+        }
+        .containerbox {
+            margin: auto;
+            margin-top: 30px;
+            height: 250px;
+            width: 300px;
+            background-color: rgb(32, 116, 11);
+            /* border: 10px solid green; */
+            border-radius: 20px;
+        }
+        .header {
+            text-align: center;
+            background-repeat: no-repeat;
+            font-family: poppinsBold;
+            padding: 5px 15px 5px 15px;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .content {
+            background-color: white;
+            font-family: poppinsReg;
+            font-size: 15px;
+            text-align: center;
+            margin-top: 0;
+            border-radius: 10px;
+        }
+        #username_input{
+            margin-top: 15px;
+        }
+        #password_input{
+            margin-left: 5px;
+            margin-top: 5px;
+        }
+        #login {
+            width: 70px;
+            height: 30px;
+            background-color: #57b846;
+            color: white;
+            border-radius: 25px;
+            margin-top: 5px;
+            margin-bottom: 15px;
         }
     </style>
 
     <body>
-        <h1>Absen Selewat</h1>
-        <p>Silakan login untuk melanjutkan.</p>
+        <div class="containerbox">
+            <div class="header">
+                <h2 id="judul">Absen Selewat</h2>
+                <h5 id="judul2">Silakan login untuk melanjutkan.</h5>
+            </div>
+            <div class="content">
+                <form>
+                    Username <input id="username_input" type="text" name="username" placeholder="Enter username"><br>
+                    Password <input id="password_input" type="password" name="password" placeholder="Enter password"><br>
+                    <!-- <input id="remember_input" type="checkbox" name="remember"> Remember Me <br> -->
+                </form>
+                <button id="login">Login</button>
+            </div>
+        </div>
     </body>
 </html>

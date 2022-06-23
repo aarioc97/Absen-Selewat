@@ -72,22 +72,27 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                     if(loc == null){
                         requestNewLocationData();
                     }
-                    else {
-                        if (loc.getLatitude() <= (Double.parseDouble(this.latitudePoint.getText().toString()) - 0.0001) || loc.getLatitude() >= (Double.parseDouble(this.latitudePoint.getText().toString()) + 0.0001)){
-                            if (loc.getLongitude() <= (Double.parseDouble(this.longitudePoint.getText().toString()) - 0.0001) || loc.getLongitude() >= (Double.parseDouble(this.longitudePoint.getText().toString()) + 0.0001)){
-                                this.absen.setEnabled(false);
-                                Toast.makeText(this, "Anda tidak berada di area absensi.", Toast.LENGTH_LONG).show();
-                            }
-                            else{
-                                this.absen.setEnabled(true);
-                                Toast.makeText(this, "Silakan melakukan absensi.", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                        String lati = Double.toString(loc.getLatitude());
-                        String longi = Double.toString(loc.getLongitude());
-                        latitudeText.setText(lati);
-                        longitudeText.setText(longi);
+                    Location poinAbsen = new Location("poinAbsen");
+                    poinAbsen.setLatitude(Double.parseDouble(this.latitudePoint.getText().toString()));
+                    poinAbsen.setLongitude(Double.parseDouble(this.longitudePoint.getText().toString()));
+
+                    Location poinCurr = new Location("poinCurr");
+                    poinCurr.setLatitude(loc.getLatitude());
+                    poinCurr.setLongitude(loc.getLongitude());
+
+                    double distance = poinAbsen.distanceTo(poinCurr);
+                    if(distance > 5){
+                        this.absen.setEnabled(false);
+                        Toast.makeText(this, "Anda tidak berada di area absensi.", Toast.LENGTH_LONG).show();
                     }
+                    else{
+                        this.absen.setEnabled(true);
+                        Toast.makeText(this, "Silakan melakukan absensi.", Toast.LENGTH_LONG).show();
+                    }
+                    String lati = Double.toString(loc.getLatitude());
+                    String longi = Double.toString(loc.getLongitude());
+                    latitudeText.setText(lati);
+                    longitudeText.setText(longi);
                 });
             }
             else{

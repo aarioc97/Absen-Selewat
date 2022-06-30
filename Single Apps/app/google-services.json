@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "221384947934",
+    "firebase_url": "https://poc-absensi-default-rtdb.firebaseio.com",
+    "project_id": "poc-absensi",
+    "storage_bucket": "poc-absensi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:221384947934:android:6ca3b3f51ff4e995702a4f",
+        "android_client_info": {
+          "package_name": "com.example.absenselewat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "221384947934-id04082a5hsvopdulne7cluvupk4ksug.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0mqidjszRNW6zb-Cy6OKCJ-gUsqIiGyA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "221384947934-id04082a5hsvopdulne7cluvupk4ksug.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

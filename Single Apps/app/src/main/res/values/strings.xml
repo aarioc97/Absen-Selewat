@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Absen Selewat</string>
     <string name="login_button">LOGIN</string>
+    <string name="register_button">REGISTER</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
     <string name="koordinat_lokasi">Koordinat Lokasi:</string>
     <string name="desired_point">Titik Koordinat Absen (x.xxxx):</string>
     <string name="latitude">Latitude:</string>

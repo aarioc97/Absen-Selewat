@@ -13,10 +13,19 @@
         android:text="@string/app_name"
         android:textSize="40sp"
         android:textStyle="bold"
-        android:layout_marginBottom="40sp"/>
+        android:layout_marginBottom="20sp"/>
+
+    <TextView
+        android:id="@+id/judul_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_page"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20sp"/>
 
     <EditText
-        android:id="@+id/usernameLogin"
+        android:id="@+id/username"
         android:layout_width="300sp"
         android:layout_height="wrap_content"
         android:hint="@string/username"
@@ -24,12 +33,30 @@
         android:autofillHints="" />
 
     <EditText
-        android:id="@+id/passwordLogin"
+        android:id="@+id/nomor_hp"
         android:layout_width="300sp"
         android:layout_height="wrap_content"
-        android:hint="@string/password"
-        android:inputType="textPassword"
+        android:hint="@string/no_telp"
+        android:inputType="text"
+        android:text="@string/country_code"
         android:autofillHints="" />
+
+    <Button
+        android:id="@+id/get_otp_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/otp_button"
+        android:textSize="20sp"
+        android:layout_marginTop="20sp"/>
+
+    <EditText
+        android:id="@+id/nomor_otp"
+        android:layout_width="300sp"
+        android:layout_height="wrap_content"
+        android:hint="@string/no_OTP"
+        android:inputType="number"
+        android:autofillHints=""
+        android:layout_marginTop="20sp"/>
 
     <Button
         android:id="@+id/login_button"
@@ -38,12 +65,5 @@
         android:text="@string/login_button"
         android:textSize="20sp"
         android:layout_marginTop="20sp"/>
-
-    <Button
-        android:id="@+id/register_button"
-        android:layout_width="120sp"
-        android:layout_height="wrap_content"
-        android:text="@string/register_button"
-        android:textSize="20sp"/>
 
 </LinearLayout>

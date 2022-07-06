@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,22 +28,35 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 //Aplikasi akan menampilkan longitude dan latitude secara langsung
 //saat aplikasi dibuka (real time).
 //Koordinat yang dicari menunjukkan lokasi tepatnya perangkat,
 //sehingga perangkat memiliki batasan lokasi untuk mengaktifkan tombol (button).
 //Menggunakan API dari Google (PlayServices) untuk mengakses latitude dan longitude.
+//Jarak antar titik absen dan titik perangkat ditentukan oleh method distanceTo().
+//Data latitude dan longitude titik absen serta radius absen disimpan di dalam database.
+//Database yang digunakan adalah Firebase.
 //Sumber: https://www.geeksforgeeks.org/how-to-get-user-location-in-android/
-
-//Penonaktifan tombol absen masih salah!
 
 public class AbsenActivity extends AppCompatActivity implements OnClickListener {
 
     FusedLocationProviderClient locProvider;
-    TextView latitudeText, longitudeText;
+    TextView latitudeText, longitudeText, usernameShow;
     EditText latitudePoint, longitudePoint;
-    Button absen, assignPoint;
+    Button absen, assignPoint, logout;
+    FirebaseAuth auth;
+    FirebaseDatabase firebaseData;
+    DatabaseReference databaseRef;
+    double latitudeDatabase, longitudeDatabase, rangeDatabase;
     int PERMISSION_ID = 44;
 
     @Override
@@ -50,15 +64,23 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_absen);
 
+        this.auth = FirebaseAuth.getInstance();
+        this.firebaseData = FirebaseDatabase.getInstance();
+        this.databaseRef = this.firebaseData.getReference();
+
         this.latitudeText = findViewById(R.id.latitude);
         this.longitudeText = findViewById(R.id.longitude);
         this.latitudePoint = findViewById(R.id.latitudepoint);
         this.longitudePoint = findViewById(R.id.longitudepoint);
+        this.usernameShow = findViewById(R.id.user_username);
         this.assignPoint = findViewById(R.id.assign);
         this.absen = findViewById(R.id.absen);
+        this.logout = findViewById(R.id.logout_button);
         this.assignPoint.setOnClickListener(this);
         this.absen.setOnClickListener(this);
+        this.logout.setOnClickListener(this);
 
+        this.getUsernameToPage();
         this.locProvider = LocationServices.getFusedLocationProviderClient(this);
         this.getLastLocation();
     }
@@ -72,27 +94,48 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
                     if(loc == null){
                         requestNewLocationData();
                     }
-                    Location poinAbsen = new Location("poinAbsen");
-                    poinAbsen.setLatitude(Double.parseDouble(this.latitudePoint.getText().toString()));
-                    poinAbsen.setLongitude(Double.parseDouble(this.longitudePoint.getText().toString()));
 
-                    Location poinCurr = new Location("poinCurr");
-                    poinCurr.setLatitude(loc.getLatitude());
-                    poinCurr.setLongitude(loc.getLongitude());
+                    this.databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            latitudeDatabase = snapshot.child("poin_absen").child("latitude").getValue(Double.class);
+                            longitudeDatabase = snapshot.child("poin_absen").child("longitude").getValue(Double.class);
+                            rangeDatabase = snapshot.child("poin_absen").child("range").getValue(Double.class);
 
-                    double distance = poinAbsen.distanceTo(poinCurr);
-                    if(distance > 5){
-                        this.absen.setEnabled(false);
-                        Toast.makeText(this, "Anda tidak berada di area absensi.", Toast.LENGTH_LONG).show();
-                    }
-                    else{
-                        this.absen.setEnabled(true);
-                        Toast.makeText(this, "Silakan melakukan absensi.", Toast.LENGTH_LONG).show();
-                    }
-                    String lati = Double.toString(loc.getLatitude());
-                    String longi = Double.toString(loc.getLongitude());
-                    latitudeText.setText(lati);
-                    longitudeText.setText(longi);
+                            String latData = Double.toString(latitudeDatabase);
+                            String longData = Double.toString(longitudeDatabase);
+                            latitudePoint.setText(latData);
+                            longitudePoint.setText(longData);
+
+                            Location poinAbsen = new Location("poinAbsen");
+                            Location poinCurr = new Location("poinCurr");
+
+                            String lati = Double.toString(loc.getLatitude());
+                            String longi = Double.toString(loc.getLongitude());
+                            latitudeText.setText(lati);
+                            longitudeText.setText(longi);
+
+                            poinAbsen.setLatitude(latitudeDatabase);
+                            poinAbsen.setLongitude(longitudeDatabase);
+                            poinCurr.setLatitude(loc.getLatitude());
+                            poinCurr.setLongitude(loc.getLongitude());
+
+                            double distance = poinAbsen.distanceTo(poinCurr);
+                            if(distance > rangeDatabase){
+                                absen.setEnabled(false);
+                                Toast.makeText(AbsenActivity.this, "Anda tidak berada di area absensi.", Toast.LENGTH_LONG).show();
+                            }
+                            else{
+                                absen.setEnabled(true);
+                                Toast.makeText(AbsenActivity.this, "Silakan melakukan absensi.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(AbsenActivity.this, "Tidak dapat mengambil titik absen.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 });
             }
             else{
@@ -172,6 +215,9 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
         }
         else if(view.getId() == R.id.assign){
             try{
+                this.databaseRef.child("poin_absen").child("latitude").setValue(Double.parseDouble(this.latitudePoint.getText().toString()));
+                this.databaseRef.child("poin_absen").child("longitude").setValue(Double.parseDouble(this.longitudePoint.getText().toString()));
+                Toast.makeText(this, "Titik absen terbaru ditambahkan.", Toast.LENGTH_LONG).show();
                 this.locProvider = LocationServices.getFusedLocationProviderClient(this);
                 this.getLastLocation();
             }
@@ -183,5 +229,33 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
                 this.longitudePoint.setText(longDef);
             }
         }
+        else if(view.getId() == R.id.logout_button){
+            new AlertDialog.Builder(this)
+                    .setTitle("Log Out")
+                    .setMessage("Apakah Anda yakin ingin Log Out dari aplikasi?")
+                    .setPositiveButton("Ya", (dialogInterface, i) -> {
+                        auth.signOut();
+                        startActivity(new Intent(AbsenActivity.this, LoginActivity.class));
+                        finish();
+                    })
+                    .setNegativeButton("Tidak", null)
+                    .show();
+        }
+    }
+
+    private void getUsernameToPage(){
+//        this.usernameShow.setText(this.databaseRef.child("user").child(Objects.requireNonNull(this.auth.getCurrentUser()).getUid()).get().toString());
+        this.databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String uName = snapshot.child("user").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child("username").getValue(String.class);
+                usernameShow.setText("Halo, " + uName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(AbsenActivity.this, "Gagal mengambil data.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

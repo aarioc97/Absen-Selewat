@@ -1,14 +1,18 @@
 <resources>
     <string name="app_name">Absen Selewat</string>
     <string name="login_button">LOGIN</string>
-    <string name="register_button">REGISTER</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="no_telp">Nomor Telepon</string>
+    <string name="no_OTP">Kode OTP</string>
+    <string name="otp_button">KIRIM OTP</string>
+    <string name="login_page">Silakan masukkan identitas Anda.</string>
     <string name="koordinat_lokasi">Koordinat Lokasi:</string>
     <string name="desired_point">Titik Koordinat Absen (x.xxxx):</string>
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
-    <string name="koordinat_value">0.0000</string>
     <string name="assign_point_button">TENTUKAN TITIK ABSEN</string>
     <string name="absen_button">ABSEN</string>
+    <string name="country_code">+62</string>
+    <string name="log_out_button">LOG OUT</string>
 </resources>

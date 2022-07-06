@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/user_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_marginTop="10sp"
+        android:layout_marginStart="10sp"
+        android:layout_alignParentTop="true"/>
+
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/log_out_button"
+        android:layout_marginTop="10sp"
+        android:layout_marginEnd="10sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"/>
 
     <TextView
         android:id="@+id/pointtitle"
@@ -12,37 +30,44 @@
         android:layout_height="wrap_content"
         android:text="@string/desired_point"
         android:textSize="20sp"
-        android:layout_marginBottom="10sp" />
+        android:layout_marginTop="30sp"
+        android:layout_marginBottom="10sp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/logout_button"/>
 
     <TextView
         android:id="@+id/latitudepointtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/latitude" />
+        android:text="@string/latitude"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/pointtitle"/>
 
     <EditText
         android:id="@+id/latitudepoint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/koordinat_value"
-        android:hint="@string/koordinat_value"
         android:inputType="numberDecimal|numberSigned"
-        android:autofillHints="" />
+        android:autofillHints=""
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/latitudepointtitle"/>
 
     <TextView
         android:id="@+id/longitudepointtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/longitude" />
+        android:text="@string/longitude"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/latitudepoint"/>
 
     <EditText
         android:id="@+id/longitudepoint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/koordinat_value"
-        android:hint="@string/koordinat_value"
         android:inputType="numberDecimal|numberSigned"
-        android:autofillHints="" />
+        android:autofillHints=""
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/longitudepointtitle"/>
 
     <Button
         android:id="@+id/assign"
@@ -50,7 +75,9 @@
         android:layout_height="wrap_content"
         android:text="@string/assign_point_button"
         android:layout_marginTop="10sp"
-        android:layout_marginBottom="50sp" />
+        android:layout_marginBottom="50sp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/longitudepoint"/>
 
     <TextView
         android:id="@+id/absentitle"
@@ -58,39 +85,50 @@
         android:layout_height="wrap_content"
         android:text="@string/koordinat_lokasi"
         android:textSize="20sp"
-        android:layout_marginBottom="10sp" />
+        android:layout_marginBottom="10sp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/latitudetitle"/>
 
     <TextView
         android:id="@+id/latitudetitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/latitude" />
+        android:text="@string/latitude"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/latitude"/>
 
     <TextView
         android:id="@+id/latitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:text="@string/koordinat_value" />
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/longitudetitle"/>
 
     <TextView
         android:id="@+id/longitudetitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/longitude" />
+        android:text="@string/longitude"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/longitude"/>
 
     <TextView
         android:id="@+id/longitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:text="@string/koordinat_value" />
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/absen"/>
 
     <Button
         android:id="@+id/absen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/absen_button"
-        android:layout_marginTop="10sp" />
+        android:layout_marginTop="10sp"
+        android:layout_marginBottom="30sp"
+        android:layout_centerHorizontal="true"
+       android:layout_alignParentBottom="true"/>
 
-</LinearLayout>
+</RelativeLayout>

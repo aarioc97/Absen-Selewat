@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "221384947934-jopmuk81tan2bl2lsgd6gevg5u2tljdf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.absenselewat",
+            "certificate_hash": "b78c17718d786d1d81ae02d798117148c4b49be4"
+          }
+        },
+        {
           "client_id": "221384947934-id04082a5hsvopdulne7cluvupk4ksug.apps.googleusercontent.com",
           "client_type": 3
         }

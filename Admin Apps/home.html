@@ -63,46 +63,28 @@
     <body>
         <div class="containerbox">
             <div class="header">
-                <h2 id="judul">Absen Selewat</h2>
-                <h5 id="judul2">Silakan login untuk melanjutkan.</h5>
+                <h2 id="judul">Welcome, Admin</h2>
             </div>
             <div class="content">
                 <form>
-                    Username <input id="username_input" type="text" name="username" placeholder="Enter username"><br>
-                    Password <input id="password_input" type="password" name="password" placeholder="Enter password"><br>
+                    <h5 id="user1" name="user1">test<br>
+                    <h5 id="user2" name="user2">test<br>
+                    <h5 id="user3" name="user3">test<br>
                 </form>
-                <button id="login" onclick="login()">Login</button>
             </div>
         </div>
-        <script>
-            function login() {
-                window.open("home.html", "_self")
-            }
-        </script>
     </body>
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.4/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.8.4/firebase-analytics.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-          apiKey: "AIzaSyBAzOVv77A8jOO_Y6NahwQsFg6WPeUn6Yg",
-          authDomain: "poc-absensi.firebaseapp.com",
-          databaseURL: "https://poc-absensi-default-rtdb.firebaseio.com",
-          projectId: "poc-absensi",
-          storageBucket: "poc-absensi.appspot.com",
-          messagingSenderId: "221384947934",
-          appId: "1:221384947934:web:e5e498dabd67f359702a4f",
-          measurementId: "G-F0RL77YDN0"
-        };
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const auth = getAuth(app);
-      </script>
+    <script>
+        import { getDatabase, ref, onValue } from "firebase/database";
+        const db = getDatabase();
+        const noImeiRef = ref(db, 'user' + userId + 'nomor_IMEI');
+        onValue(noImeiRef, (snapshot) => {
+            const data = snapshot.val();
+            showUserImei(data);
+        });
+
+        function showUserImei(data){
+            document.getElementById("user1").innerHTML = data;
+        }
+    </script>
 </html>

@@ -3,9 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/GitHub Repository/POC-Absensi/Single Apps/app/src/main/res/layout/activity_absen.xml" value="0.103125" />
+        <entry key="..\:/GitHub Repository/POC-Absensi/Single Apps/app/src/main/res/layout/activity_absen.xml" value="0.14666666666666667" />
         <entry key="..\:/GitHub Repository/POC-Absensi/Single Apps/app/src/main/res/layout/activity_login.xml" value="0.14666666666666667" />
         <entry key="..\:/GitHub Repository/POC-Absensi/Single Apps/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/GitHub Repository/POC-Absensi/Single Apps/app/src/main/res/layout/activity_register.xml" value="0.11458333333333333" />
       </map>
     </option>
   </component>

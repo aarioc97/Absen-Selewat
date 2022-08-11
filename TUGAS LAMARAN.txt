@@ -1,8 +1,0 @@
-POC mobile + web
-ikuti UCD yang ada
-tombol absen hanya bisa diakses di area tertentu
-absen masuk dan pulang
-sistem login apps sekali dengan register IMEI dan OTP
-
-TASK:
-- kurang verifikasi SHA-256 di Firebase untuk Single App!

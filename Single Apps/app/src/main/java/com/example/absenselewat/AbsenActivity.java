@@ -52,11 +52,12 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
     FusedLocationProviderClient locProvider;
     TextView latitudeText, longitudeText, usernameShow;
     EditText latitudePoint, longitudePoint;
-    Button absen, assignPoint, logout;
+    Button absen, assignPoint, logout, maps;
     FirebaseAuth auth;
     FirebaseDatabase firebaseData;
     DatabaseReference databaseRef;
     double latitudeDatabase, longitudeDatabase, rangeDatabase;
+    boolean masuk;
     int PERMISSION_ID = 44;
 
     @Override
@@ -76,13 +77,21 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
         this.assignPoint = findViewById(R.id.assign);
         this.absen = findViewById(R.id.absen);
         this.logout = findViewById(R.id.logout_button);
+        this.maps = findViewById(R.id.maps_button);
         this.assignPoint.setOnClickListener(this);
         this.absen.setOnClickListener(this);
         this.logout.setOnClickListener(this);
+        this.maps.setOnClickListener(this);
 
         this.getUsernameToPage();
+        this.getAbsenStatus();
+        this.setAbsenButtonText();
+        this.getLongLatRange();
+
         this.locProvider = LocationServices.getFusedLocationProviderClient(this);
         this.getLastLocation();
+
+        this.autoClockOutOOR();
     }
 
     @SuppressLint("MissingPermission")
@@ -95,47 +104,27 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
                         requestNewLocationData();
                     }
 
-                    this.databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            latitudeDatabase = snapshot.child("poin_absen").child("latitude").getValue(Double.class);
-                            longitudeDatabase = snapshot.child("poin_absen").child("longitude").getValue(Double.class);
-                            rangeDatabase = snapshot.child("poin_absen").child("range").getValue(Double.class);
+                    Location poinAbsen = new Location("poinAbsen");
+                    Location poinCurr = new Location("poinCurr");
 
-                            String latData = Double.toString(latitudeDatabase);
-                            String longData = Double.toString(longitudeDatabase);
-                            latitudePoint.setText(latData);
-                            longitudePoint.setText(longData);
+                    String lati = Double.toString(Objects.requireNonNull(loc).getLatitude());
+                    String longi = Double.toString(loc.getLongitude());
+                    latitudeText.setText(lati);
+                    longitudeText.setText(longi);
 
-                            Location poinAbsen = new Location("poinAbsen");
-                            Location poinCurr = new Location("poinCurr");
-
-                            String lati = Double.toString(loc.getLatitude());
-                            String longi = Double.toString(loc.getLongitude());
-                            latitudeText.setText(lati);
-                            longitudeText.setText(longi);
-
-                            poinAbsen.setLatitude(latitudeDatabase);
-                            poinAbsen.setLongitude(longitudeDatabase);
-                            poinCurr.setLatitude(loc.getLatitude());
-                            poinCurr.setLongitude(loc.getLongitude());
-
-                            double distance = poinAbsen.distanceTo(poinCurr);
-                            if(distance > rangeDatabase){
-                                absen.setEnabled(false);
-                                Toast.makeText(AbsenActivity.this, "Anda tidak berada di area absensi.", Toast.LENGTH_LONG).show();
-                            }
-                            else{
-                                absen.setEnabled(true);
-                                Toast.makeText(AbsenActivity.this, "Silakan melakukan absensi.", Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(AbsenActivity.this, "Tidak dapat mengambil titik absen.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    poinAbsen.setLatitude(latitudeDatabase);
+                    poinAbsen.setLongitude(longitudeDatabase);
+                    poinCurr.setLatitude(loc.getLatitude());
+                    poinCurr.setLongitude(loc.getLongitude());
+                    double distance = poinAbsen.distanceTo(poinCurr);
+                    if(distance > rangeDatabase){
+                        absen.setEnabled(false);
+//                        Toast.makeText(AbsenActivity.this, "Anda tidak berada di area absensi.", Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        absen.setEnabled(true);
+//                        Toast.makeText(AbsenActivity.this, "Silakan melakukan absensi.", Toast.LENGTH_LONG).show();
+                    }
                 });
             }
             else{
@@ -211,7 +200,27 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.absen) {
-            Toast.makeText(this, "Sudah masuk absen!", Toast.LENGTH_SHORT).show();
+            if(!this.masuk) {
+                this.databaseRef.child("user").child(Objects.requireNonNull(this.auth.getCurrentUser()).getUid()).child("absensi").setValue(true);
+                this.getAbsenStatus();
+                this.setAbsenButtonText();
+                Toast.makeText(this, "Berhasil melakukan absen masuk (clock in)!", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                new AlertDialog.Builder(this)
+                        .setTitle("Clock Out / Absen Pulang")
+                        .setMessage("Apakah Anda yakin ingin absen pulang sekarang?")
+                        .setPositiveButton("Ya", (dialogInterface, i) -> {
+                            this.databaseRef.child("user").child(Objects.requireNonNull(this.auth.getCurrentUser()).getUid()).child("absensi").setValue(false);
+                            this.getAbsenStatus();
+                            this.setAbsenButtonText();
+                            Toast.makeText(this, "Berhasil melakukan absen pulang (clock out)!", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Tidak", null)
+                        .show();
+            }
+            this.locProvider = LocationServices.getFusedLocationProviderClient(this);
+            this.getLastLocation();
         }
         else if(view.getId() == R.id.assign){
             try{
@@ -241,6 +250,10 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
                     .setNegativeButton("Tidak", null)
                     .show();
         }
+        else if(view.getId() == R.id.maps_button){
+            startActivity(new Intent(this, OpenStreetMapsActivity.class));
+            finish();
+        }
     }
 
     private void getUsernameToPage(){
@@ -249,7 +262,7 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String uName = snapshot.child("user").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child("username").getValue(String.class);
-                usernameShow.setText("Halo, " + uName);
+                usernameShow.setText(uName);
             }
 
             @Override
@@ -257,5 +270,61 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
                 Toast.makeText(AbsenActivity.this, "Gagal mengambil data.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void getAbsenStatus(){
+        this.databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                masuk = snapshot.child("user").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child("absensi").getValue(Boolean.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                masuk = false;
+                Toast.makeText(AbsenActivity.this, "Status absensi pengguna tidak diketahui.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getLongLatRange(){
+        this.databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                latitudeDatabase = snapshot.child("poin_absen").child("latitude").getValue(Double.class);
+                longitudeDatabase = snapshot.child("poin_absen").child("longitude").getValue(Double.class);
+                rangeDatabase = snapshot.child("poin_absen").child("range").getValue(Double.class);
+
+                String latData = Double.toString(latitudeDatabase);
+                String longData = Double.toString(longitudeDatabase);
+                latitudePoint.setText(latData);
+                longitudePoint.setText(longData);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(AbsenActivity.this, "Tidak dapat mengambil titik absen.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setAbsenButtonText(){
+        String clockIn = "ABSEN MASUK";
+        String clockOut = "ABSEN PULANG";
+        if(!this.masuk){
+            this.absen.setText(clockIn);
+        }
+        else{
+            this.absen.setText(clockOut);
+        }
+    }
+
+    private void autoClockOutOOR(){
+        if(this.masuk && !this.absen.isEnabled()){
+            this.databaseRef.child("user").child(Objects.requireNonNull(this.auth.getCurrentUser()).getUid()).child("absensi").setValue(false);
+            this.getAbsenStatus();
+            this.setAbsenButtonText();
+            Toast.makeText(this, "Otomatis clock out karena keluar dari lokasi.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

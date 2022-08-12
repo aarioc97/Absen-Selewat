@@ -126,6 +126,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                         this.databaseRef.child("user").child(Objects.requireNonNull(this.auth.getCurrentUser()).getUid()).child("nomor_HP").setValue(this.noHP);
                         this.databaseRef.child("user").child(Objects.requireNonNull(this.auth.getCurrentUser()).getUid()).child("nomor_IMEI").setValue(this.noIMEI);
                         this.databaseRef.child("user").child(Objects.requireNonNull(this.auth.getCurrentUser()).getUid()).child("is_admin").setValue(0);
+                        this.databaseRef.child("user").child(Objects.requireNonNull(this.auth.getCurrentUser()).getUid()).child("absensi").setValue(false);
                         finish();
                     } else {
                         // if the code is not correct then we are

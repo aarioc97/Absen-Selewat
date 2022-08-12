@@ -13,7 +13,9 @@
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
     <string name="assign_point_button">TENTUKAN TITIK ABSEN</string>
-    <string name="absen_button">ABSEN</string>
     <string name="country_code">+62</string>
     <string name="log_out_button">LOG OUT</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="maps_button">MAPS</string>
+    <string name="user_title_text">Halo, </string>
 </resources>

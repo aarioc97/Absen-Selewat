@@ -6,13 +6,22 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/user_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user_title_text"
+        android:layout_marginTop="10sp"
+        android:layout_marginStart="10sp"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
         android:id="@+id/user_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
         android:layout_marginTop="10sp"
         android:layout_marginStart="10sp"
-        android:layout_alignParentTop="true"/>
+        android:layout_toEndOf="@id/user_title"/>
 
     <Button
         android:id="@+id/logout_button"
@@ -23,6 +32,15 @@
         android:layout_marginEnd="10sp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"/>
+
+    <Button
+        android:id="@+id/maps_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/maps_button"
+        android:layout_marginTop="10sp"
+        android:layout_marginEnd="10sp"
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:id="@+id/pointtitle"
@@ -125,7 +143,7 @@
         android:id="@+id/absen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/absen_button"
+        android:text=""
         android:layout_marginTop="10sp"
         android:layout_marginBottom="30sp"
         android:layout_centerHorizontal="true"

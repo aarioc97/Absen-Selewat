@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -59,6 +60,8 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
     double latitudeDatabase, longitudeDatabase, rangeDatabase;
     boolean masuk;
     int PERMISSION_ID = 44;
+    String clockIn = "ABSEN MASUK";
+    String clockOut = "ABSEN PULANG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -85,17 +88,16 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
 
         this.getUsernameToPage();
         this.getAbsenStatus();
-        this.setAbsenButtonText();
         this.getLongLatRange();
 
         this.locProvider = LocationServices.getFusedLocationProviderClient(this);
         this.getLastLocation();
-
-        this.autoClockOutOOR();
+//        this.autoClockOutOOR();
+//        Toast.makeText(AbsenActivity.this, "Status absensi: " + masuk, Toast.LENGTH_SHORT).show();
     }
 
     @SuppressLint("MissingPermission")
-    private void getLastLocation(){
+    public void getLastLocation(){
         if(this.checkPermissions()){
             if(this.isLocationEnabled()){
                 this.locProvider.getLastLocation().addOnCompleteListener(task -> {
@@ -117,14 +119,9 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
                     poinCurr.setLatitude(loc.getLatitude());
                     poinCurr.setLongitude(loc.getLongitude());
                     double distance = poinAbsen.distanceTo(poinCurr);
-                    if(distance > rangeDatabase){
-                        absen.setEnabled(false);
-//                        Toast.makeText(AbsenActivity.this, "Anda tidak berada di area absensi.", Toast.LENGTH_LONG).show();
-                    }
-                    else{
-                        absen.setEnabled(true);
-//                        Toast.makeText(AbsenActivity.this, "Silakan melakukan absensi.", Toast.LENGTH_LONG).show();
-                    }
+                    //                        Toast.makeText(AbsenActivity.this, "Anda tidak berada di area absensi.", Toast.LENGTH_LONG).show();
+                    //                        Toast.makeText(AbsenActivity.this, "Silakan melakukan absensi.", Toast.LENGTH_LONG).show();
+                    absen.setEnabled(!(distance > rangeDatabase));
                 });
             }
             else{
@@ -200,25 +197,7 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.absen) {
-            if(!this.masuk) {
-                this.databaseRef.child("user").child(Objects.requireNonNull(this.auth.getCurrentUser()).getUid()).child("absensi").setValue(true);
-                this.getAbsenStatus();
-                this.setAbsenButtonText();
-                Toast.makeText(this, "Berhasil melakukan absen masuk (clock in)!", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                new AlertDialog.Builder(this)
-                        .setTitle("Clock Out / Absen Pulang")
-                        .setMessage("Apakah Anda yakin ingin absen pulang sekarang?")
-                        .setPositiveButton("Ya", (dialogInterface, i) -> {
-                            this.databaseRef.child("user").child(Objects.requireNonNull(this.auth.getCurrentUser()).getUid()).child("absensi").setValue(false);
-                            this.getAbsenStatus();
-                            this.setAbsenButtonText();
-                            Toast.makeText(this, "Berhasil melakukan absen pulang (clock out)!", Toast.LENGTH_SHORT).show();
-                        })
-                        .setNegativeButton("Tidak", null)
-                        .show();
-            }
+            this.doAbsensi();
             this.locProvider = LocationServices.getFusedLocationProviderClient(this);
             this.getLastLocation();
         }
@@ -277,18 +256,27 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 masuk = snapshot.child("user").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child("absensi").getValue(Boolean.class);
+                if(masuk){
+                    absen.setText(clockOut);
+                } else {
+                    absen.setText(clockIn);
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                masuk = false;
                 Toast.makeText(AbsenActivity.this, "Status absensi pengguna tidak diketahui.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void setAbsenStatus(boolean status){
+        this.databaseRef.child("user").child(Objects.requireNonNull(this.auth.getCurrentUser()).getUid()).child("absensi").setValue(status);
+        this.getAbsenStatus();
+    }
+
     private void getLongLatRange(){
-        this.databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        this.databaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 latitudeDatabase = snapshot.child("poin_absen").child("latitude").getValue(Double.class);
@@ -308,23 +296,32 @@ public class AbsenActivity extends AppCompatActivity implements OnClickListener 
         });
     }
 
-    private void setAbsenButtonText(){
-        String clockIn = "ABSEN MASUK";
-        String clockOut = "ABSEN PULANG";
+    private void doAbsensi(){
         if(!this.masuk){
-            this.absen.setText(clockIn);
+            this.setAbsenStatus(true);
+            Toast.makeText(this, "Berhasil melakukan absen masuk (clock in)!", Toast.LENGTH_SHORT).show();
         }
         else{
-            this.absen.setText(clockOut);
+            new AlertDialog.Builder(this)
+                .setTitle("Clock Out / Absen Pulang")
+                .setMessage("Apakah Anda yakin ingin absen pulang sekarang?")
+                .setPositiveButton("Ya", (dialogInterface, i) -> {
+                    this.setAbsenStatus(false);
+                    Toast.makeText(this, "Berhasil melakukan absen pulang (clock out)!", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Tidak", null)
+                .show();
         }
     }
 
-    private void autoClockOutOOR(){
-        if(this.masuk && !this.absen.isEnabled()){
-            this.databaseRef.child("user").child(Objects.requireNonNull(this.auth.getCurrentUser()).getUid()).child("absensi").setValue(false);
-            this.getAbsenStatus();
-            this.setAbsenButtonText();
-            Toast.makeText(this, "Otomatis clock out karena keluar dari lokasi.", Toast.LENGTH_SHORT).show();
-        }
-    }
+//    private void autoClockOutOOR(){
+//        this.getAbsenStatus();
+//        if(this.masuk && !this.absen.isEnabled()){
+//            this.setAbsenStatus(false);
+//            Toast.makeText(this, "Otomatis clock out karena keluar dari lokasi.", Toast.LENGTH_SHORT).show();
+//        }
+//        else if(!this.masuk){
+//            Toast.makeText(this, "Status absensi masih false.", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 }

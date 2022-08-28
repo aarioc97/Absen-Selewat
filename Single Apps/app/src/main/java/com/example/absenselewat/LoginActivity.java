@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -52,9 +51,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         this.auth = FirebaseAuth.getInstance();
         this.firebaseData = FirebaseDatabase.getInstance();
         this.databaseRef = this.firebaseData.getReference();
-
-        FirebaseUser currUser = this.auth.getCurrentUser();
-        updateUI(currUser);
 
         setContentView(R.layout.activity_login);
 
@@ -221,15 +217,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         verificationId = savedInstanceState.getString(KEY_VERIFICATION_ID);
-    }
-
-    public void updateUI(FirebaseUser user){
-        if(user != null){
-            startActivity(new Intent(this, AbsenActivity.class));
-            finish();
-        } else {
-            Toast.makeText(this,"Silakan login menggunakan nomor HP dan username Anda.",Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override
